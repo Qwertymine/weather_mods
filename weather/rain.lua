@@ -97,7 +97,7 @@ minetest.register_node("weather:rain", {
 minetest.register_abm({
 	nodenames = {"group:crumbly", "group:snappy", "group:cracky", "group:choppy"},
 	neighbors = {"default:air"},
-	interval = 10.0, 
+	interval = 20.0, 
 	chance = 20,
 	action = function (pos, node, active_object_count, active_object_count_wider)
 		if weather == "rain" then
@@ -118,7 +118,7 @@ minetest.register_abm({
 
 minetest.register_abm({
 	nodenames = {"weather:rain"},
-	interval = 5.0, 
+	interval = 10.0, 
 	chance = 8,
 	action = function (pos, node, active_object_count, active_object_count_wider)
 		minetest.remove_node(pos)
