@@ -63,11 +63,94 @@ minetest.register_globalstep(function(dtime)
 
 	end
 end)
+--]]--]]
+minetest.register_node("weather:rain", {
+	description = "RAIN",
+	drawtype = "nodebox",
+	node_box = {
+		type = "fixed",
+		fixed = {
+			-- body
+			{-0.5,0.0,0.0,0.5,20.0,0.0},
+			{0.0,0.0,-0.5,0.0,20.0,0.5},
+		}
+	},
+	visual_scale = 2.3,
+	tiles = {
+		{
+			name = "weather_block_rain_ani.png",
+			animation = {
+				type = "vertical_frames",
+				aspect_w = 144,
+				aspect_h = 256,
+				length = 1.0,
+			},
+		},
+		{
+			name = "weather_block_rain_ani.png",
+			animation = {
+				type = "vertical_frames",
+				aspect_w = 144,
+				aspect_h = 256,
+				length = 1.0,
+			},
+		},
+				{
+			name = "weather_block_rain_ani.png",
+			animation = {
+				type = "vertical_frames",
+				aspect_w = 144,
+				aspect_h = 256,
+				length = 1.0,
+			},
+		},
+		{
+			name = "weather_block_rain_ani.png",
+			animation = {
+				type = "vertical_frames",
+				aspect_w = 144,
+				aspect_h = 256,
+				length = 1.0,
+			},
+		},
+				{
+			name = "weather_block_rain_ani.png",
+			animation = {
+				type = "vertical_frames",
+				aspect_w = 144,
+				aspect_h = 256,
+				length = 1.0,
+			},
+		},
+		{
+			name = "weather_block_rain_ani.png",
+			animation = {
+				type = "vertical_frames",
+				aspect_w = 144,
+				aspect_h = 256,
+				length = 1.0,
+			},
+		},
+	},
+	--tiles = {"weather_block_rain_lag.png"},
+	inventory_image = "default_junglegrass.png",
+	wield_image = "default_junglegrass.png",
+	paramtype = "light",
+	sunlight_propagates = true,
+	walkable = false,
+	buildable_to = true,
+	groups = {weather_effect=1,rain=1},
+	selection_box = {
+		type = "fixed",
+		fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5},
+	},
+})
 
-
+--[[
 minetest.register_node("weather:rain", {
 	description = "RAIN",
 	drawtype = "plantlike",
+	--visual_scale = 4.3,
 	visual_scale = 2.3,
 	tiles = {
 		{
@@ -80,14 +163,44 @@ minetest.register_node("weather:rain", {
 			},
 		},
 	},
-	--tiles = {"weather_block_rain.png"},
+	--tiles = {"weather_block_rain_lag.png"},
 	inventory_image = "default_junglegrass.png",
 	wield_image = "default_junglegrass.png",
 	paramtype = "light",
 	sunlight_propagates = true,
 	walkable = false,
 	buildable_to = true,
-	groups = {weather_effect=1},
+	groups = {weather_effect=1,rain=1},
+	selection_box = {
+		type = "fixed",
+		fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5},
+	},
+})
+--]]
+minetest.register_node("weather:rain_top", {
+	description = "RAIN",
+	drawtype = "plantlike",
+	--visual_scale = 4.3,
+	visual_scale = 2.3,
+	tiles = {
+		{
+			name = "weather_block_rain_ani.png",
+			animation = {
+				type = "vertical_frames",
+				aspect_w = 256,
+				aspect_h = 256,
+				length = 1.0,
+			},
+		},
+	},
+	--tiles = {"weather_block_rain_lag.png"},
+	inventory_image = "default_junglegrass.png",
+	wield_image = "default_junglegrass.png",
+	paramtype = "light",
+	sunlight_propagates = true,
+	walkable = false,
+	buildable_to = true,
+	groups = {weather_effect=1,rain=1},
 	selection_box = {
 		type = "fixed",
 		fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5},
@@ -115,18 +228,29 @@ minetest.register_abm({
 		end
 	end
 })
-
+--[[
 minetest.register_abm({
 	nodenames = {"weather:rain"},
 	interval = 10.0, 
 	chance = 8,
 	action = function (pos, node, active_object_count, active_object_count_wider)
+		local np = addvectors(pos, {x=0,y=8,z=0})
+		minetest.env:add_node(np, {name="weather:rain_top"})
+	end
+})
+--]]
+minetest.register_abm({
+	nodenames = {"group:weather_effect"},
+	interval = 10.0, 
+	chance = 8,
+	action = function (pos, node, active_object_count, active_object_count_wider)
 		minetest.remove_node(pos)
+		local np = addvectors(pos, {x=0,y=8,z=0})
 	end
 })
 
 minetest.register_abm({
-	nodenames = {"weather:rain"},
+	nodenames = {"group:rain"},
 	interval = 20.0, 
 	chance = 1,
 	action = function (pos, node, active_object_count, active_object_count_wider)
