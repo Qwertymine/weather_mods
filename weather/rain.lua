@@ -71,8 +71,8 @@ minetest.register_node("weather:rain", {
 		type = "fixed",
 		fixed = {
 			-- body
-			{-0.5,0.0,0.0,0.5,40.0,0.0},
-			{0.0,0.0,-0.5,0.0,40.0,0.5},
+			{-0.5,0.0,0.0,0.5,20.0,0.0},
+			{0.0,0.0,-0.5,0.0,20.0,0.5},
 		}
 	},
 	visual_scale = 2.3,
@@ -151,7 +151,7 @@ minetest.register_abm({
 	nodenames = {"group:crumbly", "group:snappy", "group:cracky", "group:choppy"},
 	neighbors = {"default:air"},
 	interval = 20.0, 
-	chance = 20,
+	chance = 1,
 	action = function (pos, node, active_object_count, active_object_count_wider)
 		if weather == "rain" then
 			if minetest.registered_nodes[node.name].drawtype == "normal"
@@ -175,7 +175,6 @@ minetest.register_abm({
 	chance = 8,
 	action = function (pos, node, active_object_count, active_object_count_wider)
 		minetest.remove_node(pos)
-		local np = addvectors(pos, {x=0,y=8,z=0})
 	end
 })
 
