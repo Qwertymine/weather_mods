@@ -151,7 +151,7 @@ minetest.register_abm({
 	nodenames = {"group:crumbly", "group:snappy", "group:cracky", "group:choppy"},
 	neighbors = {"default:air"},
 	interval = 20.0, 
-	chance = 1,
+	chance = 20,
 	action = function (pos, node, active_object_count, active_object_count_wider)
 		if weather == "rain" then
 			if minetest.registered_nodes[node.name].drawtype == "normal"
