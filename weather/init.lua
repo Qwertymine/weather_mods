@@ -23,8 +23,8 @@ read_weather = function ()
 	return readweather
 end
 
-weather = read_weather()
-
+weather = "rain" -- read_weather()
+--[[
 minetest.register_globalstep(function(dtime)
 	if weather == "rain" or weather == "snow" then
 		if math.random(1, 10000) == 1 then
@@ -42,7 +42,7 @@ minetest.register_globalstep(function(dtime)
 		end
 	end
 end)
-
+--]]
 dofile(minetest.get_modpath("weather").."/rain.lua")
 dofile(minetest.get_modpath("weather").."/snow.lua")
 dofile(minetest.get_modpath("weather").."/command.lua")
