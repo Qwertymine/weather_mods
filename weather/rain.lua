@@ -1,4 +1,4 @@
-local search_height = 16
+local search_height = 32
 local glass_check = false
 local search_dist = 2
 
@@ -161,26 +161,18 @@ minetest.register_abm({
 			return
 		end
 		if weather == "rain" then
-		--[[
-			if minetest.registered_nodes[node.name].drawtype == "normal"
-			or minetest.registered_nodes[node.name].drawtype == "allfaces_optional" then
-			--]]
-				local np = addvectors(pos, {x=0, y=1, z=0})
-				local ap = addvectors(pos, {x=0, y=15, z=0})
-				local vel = {x=0, y= -24, z=0}
-				local acc = {x=0, y=-9.81, z=0}
-				if minetest.env:get_node_light(np, 0.5) == 15
-				and minetest.env:get_node(np).name == "air" then
-					if glass_check and #minetest.find_nodes_in_area(pos,{x=pos.x,y=pos.y+search_height,z=pos.z},{"group:cracky"}) ~= 0 then
-						return
-					end
-					minetest.env:add_node(np, {name="weather:rain"})
+			local np = addvectors(pos, {x=0, y=1, z=0})
+			if minetest.env:get_node_light(np, 0.5) == 15
+			and minetest.env:get_node(np).name == "air" then
+				if glass_check and #minetest.find_nodes_in_area(pos,{x=pos.x,y=pos.y+search_height,z=pos.z},{"group:cracky"}) ~= 0 then
+					return
 				end
-			--end
+				minetest.env:add_node(np, {name="weather:rain"})
+			end
 		end
 	end
 })
-
+--[[
 minetest.register_abm({
 	nodenames = {"group:weather_effect"},
 	interval = 1.0, 
@@ -192,7 +184,7 @@ minetest.register_abm({
 		minetest.remove_node(pos)
 	end
 })
-
+--]]
 minetest.register_abm({
 	nodenames = {"group:rain"},
 	interval = 20.0, 
