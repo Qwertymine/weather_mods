@@ -151,11 +151,16 @@ minetest.register_abm({
 	nodenames = {"group:crumbly", "group:snappy", "group:cracky", "group:choppy","group:liquid"},
 	neighbors = {"default:air"},
 	interval = 5.0, 
-	chance = 40,
+	chance = 5,
 	action = function (pos, node, active_object_count, active_object_count_wider)
+		if minetest.find_node_near(pos,1,{"group:weather_effect"}) then
+			return
+		end
 		if weather == "rain" then
+		--[[
 			if minetest.registered_nodes[node.name].drawtype == "normal"
 			or minetest.registered_nodes[node.name].drawtype == "allfaces_optional" then
+			--]]
 				local np = addvectors(pos, {x=0, y=1, z=0})
 				local ap = addvectors(pos, {x=0, y=15, z=0})
 				local vel = {x=0, y= -24, z=0}
@@ -164,7 +169,7 @@ minetest.register_abm({
 				and minetest.env:get_node(np).name == "air" then
 					minetest.env:add_node(np, {name="weather:rain"})
 				end
-			end
+			--end
 		end
 	end
 })
