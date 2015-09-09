@@ -157,10 +157,10 @@ minetest.register_abm({
 	interval = 1.0, 
 	chance = 64,
 	action = function (pos, node, active_object_count, active_object_count_wider)
-		if minetest.find_node_near(pos,search_dist,{"group:weather_effect"}) then
-			return
-		end
 		if weather == "rain" then
+			if minetest.find_node_near(pos,search_dist,{"group:weather_effect"}) then
+				return
+			end
 			local np = addvectors(pos, {x=0, y=1, z=0})
 			if minetest.env:get_node_light(np, 0.5) == 15
 			and minetest.env:get_node(np).name == "air" then
@@ -170,9 +170,11 @@ minetest.register_abm({
 				minetest.env:add_node(np, {name="weather:rain"})
 			end
 		end
+	--]]
 	end
 })
---[[
+
+
 minetest.register_abm({
 	nodenames = {"group:weather_effect"},
 	interval = 1.0, 
@@ -184,7 +186,8 @@ minetest.register_abm({
 		minetest.remove_node(pos)
 	end
 })
---]]
+
+
 minetest.register_abm({
 	nodenames = {"group:rain"},
 	interval = 20.0, 
