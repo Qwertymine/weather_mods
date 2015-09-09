@@ -1,5 +1,5 @@
 -- Rain
-
+--[[
 minetest.register_globalstep(function(dtime)
 	if weather ~= "rain" then return end
 	for _, player in ipairs(minetest.get_connected_players()) do
@@ -20,7 +20,7 @@ minetest.register_globalstep(function(dtime)
 				minacc=acc, maxacc=acc,
 				minexptime=0.8, maxexptime=0.8,
 				minsize=50, maxsize=50,
-				collisiondetection=false, vertical=true, texture="weather_rain.png", player=player:get_player_name()})
+				collisiondetection=false, vertical=true, texture="weather_rain.png", player=player:get_player_name()})--]]
 			--[[
 		else
 			local minp = addvectors(ppos, {x=-6, y=-7, z=-6})
@@ -57,7 +57,7 @@ minetest.register_globalstep(function(dtime)
 					collisiondetection=false, vertical=true, texture="weather_rain.png", player=player:get_player_name()})
 				end
 			end
-			--]]
+			--]]--[[
 		end
 
 
@@ -148,10 +148,10 @@ minetest.register_node("weather:rain", {
 
 
 minetest.register_abm({
-	nodenames = {"group:crumbly", "group:snappy", "group:cracky", "group:choppy"},
+	nodenames = {"group:crumbly", "group:snappy", "group:cracky", "group:choppy","group:liquid"},
 	neighbors = {"default:air"},
-	interval = 20.0, 
-	chance = 20,
+	interval = 5.0, 
+	chance = 40,
 	action = function (pos, node, active_object_count, active_object_count_wider)
 		if weather == "rain" then
 			if minetest.registered_nodes[node.name].drawtype == "normal"
