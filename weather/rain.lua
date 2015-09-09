@@ -1,3 +1,6 @@
+local search_height = 16
+local search_dist = 2
+
 -- Rain
 --[[
 minetest.register_globalstep(function(dtime)
@@ -150,10 +153,13 @@ minetest.register_node("weather:rain", {
 minetest.register_abm({
 	nodenames = {"group:crumbly", "group:snappy", "group:cracky", "group:choppy","group:liquid"},
 	neighbors = {"default:air"},
-	interval = 5.0, 
-	chance = 5,
+	interval = 1.0, 
+	chance = 25,
 	action = function (pos, node, active_object_count, active_object_count_wider)
-		if minetest.find_node_near(pos,1,{"group:weather_effect"}) then
+		if minetest.find_node_near(pos,search_dist,{"group:weather_effect"}) then
+			return
+		end
+		if #minetest.find_nodes_in_area(pos,{x=pos.x,y=pos.y+search_height,z=pos.z},{"group:cracky"}) ~= 0 then
 			return
 		end
 		if weather == "rain" then
@@ -176,9 +182,12 @@ minetest.register_abm({
 
 minetest.register_abm({
 	nodenames = {"group:weather_effect"},
-	interval = 10.0, 
-	chance = 8,
+	interval = 1.0, 
+	chance = 10,
 	action = function (pos, node, active_object_count, active_object_count_wider)
+		if minetest.env:get_node_light(pos, 0.5) == 15 then
+			return
+		end
 		minetest.remove_node(pos)
 	end
 })
