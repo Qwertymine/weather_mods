@@ -149,8 +149,7 @@ minetest.register_node("weather:rain", {
 		fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5},
 	},
 })
-
-
+--[[
 minetest.register_abm({
 	nodenames = {"group:crumbly", "group:snappy", "group:cracky", "group:choppy","group:liquid"},
 	neighbors = {"default:air"},
@@ -161,11 +160,11 @@ minetest.register_abm({
 			return
 		end
 		if weather == "rain" then
-		--[[
+		--[
 			if minetest.find_node_near(pos,search_dist,{"group:weather_effect"}) then
 				return
 			end
-			--]]
+			--]
 			local np = addvectors(pos, {x=0, y=1, z=0})
 			if minetest.env:get_node_light(np, 0.5) == 15
 			and minetest.env:get_node(np).name == "air" then
@@ -175,11 +174,37 @@ minetest.register_abm({
 				minetest.env:add_node(np, {name="weather:rain"})
 			end
 		end
-	--]]
+	--]
+	end
+})
+--]]
+
+minetest.register_abm({
+	nodenames = {"group:weather_effect"},
+	interval = 1.0, 
+	chance = 256,
+	action = function (pos, node, active_object_count, active_object_count_wider)
+		if weather == "rain" then
+			minetest.env:set_node(pos, {name="weather:rain"})
+		elseif weather == "dry" then
+			minetest.env:set_node(pos, {name="weather:idle_node"})
+		end
 	end
 })
 
+minetest.register_abm({
+	nodenames = {"group:weather_effect"},
+	interval = 1.0, 
+	chance = 256,
+	action = function (pos, node, active_object_count, active_object_count_wider)
+		if minetest.env:get_node_light(pos, 0.5) == 15 then
+			return
+		end
+		--minetest.remove_node(pos)
+	end
+})
 
+--[[
 minetest.register_abm({
 	nodenames = {"group:weather_effect"},
 	interval = 1.0, 
@@ -203,4 +228,4 @@ minetest.register_abm({
 		end
 	end
 })
-
+--]]
