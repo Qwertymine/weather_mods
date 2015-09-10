@@ -1,6 +1,6 @@
 local search_height = 32
 local glass_check = false
-local search_dist = 2
+local square_dist = 3
 
 -- Rain
 --[[
@@ -155,12 +155,17 @@ minetest.register_abm({
 	nodenames = {"group:crumbly", "group:snappy", "group:cracky", "group:choppy","group:liquid"},
 	neighbors = {"default:air"},
 	interval = 1.0, 
-	chance = 64,
+	chance = 256,
 	action = function (pos, node, active_object_count, active_object_count_wider)
+		if pos.x%square_dist ~= 0 or pos.z%square_dist ~= 0 then
+			return
+		end
 		if weather == "rain" then
+		--[[
 			if minetest.find_node_near(pos,search_dist,{"group:weather_effect"}) then
 				return
 			end
+			--]]
 			local np = addvectors(pos, {x=0, y=1, z=0})
 			if minetest.env:get_node_light(np, 0.5) == 15
 			and minetest.env:get_node(np).name == "air" then
