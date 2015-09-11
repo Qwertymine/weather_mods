@@ -21,27 +21,22 @@ minetest.register_node("weather:idle_node", {
 	},
 	after_destruct = function(pos)
 		local node = minetest.get_node_or_nil(pos)
-		if node and minetest.get_node_group(node.name,"group:weather_effect") ~= 0 then
+		if node and minetest.get_node_group(node.name,"weather_effect") ~= 0 then
 			return
 		end
-		--minetest.chat_send_all("trig")
 		local newpos = w.search_up(pos)
 		--minetest.chat_send_all("oldpos"..pos.y)
 		if newpos then
 			--minetest.chat_send_all("newpos".. newpos.y)
-		---[[
 			minetest.env:set_node(newpos, {name="weather:idle_node"})
 			return
-		--]]
 		else
 			newpos = w.search_down(pos)
 		end
 		if newpos then
 			--minetest.chat_send_all("newpos".. newpos.y)
-		---[[
 			minetest.env:set_node(newpos, {name="weather:idle_node"})
 			return
-		--]]
 		else
 			minetest.debug("Rain Lost")
 		end
@@ -163,19 +158,18 @@ minetest.register_on_generated(function(minp, maxp, seed)
 					local vi
 					local vi_last
 					for y = -maxp.y,-minp.y do
-						if -y < 0 then
-							break
-						end
-						vi_last = vi
-						vi = area:index(x,-y,z)
-						if vi_last then
-							if data[vi] == c_air then
-							--do nothing
-							elseif l_data[vi_last]%16 == 15 then
-								data[vi_last] = c_weather
-								break
-							else
-								break
+						if -y > 0 then
+							vi_last = vi
+							vi = area:index(x,-y,z)
+							if vi_last then
+								if data[vi] == c_air then
+								--do nothing
+								elseif l_data[vi_last]%16 == 15 then
+									data[vi_last] = c_weather
+									break
+								else
+									break
+								end
 							end
 						end
 					end

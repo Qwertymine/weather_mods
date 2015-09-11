@@ -148,27 +148,23 @@ minetest.register_node("weather:rain", {
 	on_blast = function() end,
 	after_destruct = function(pos)
 		local node = minetest.get_node_or_nil(pos)
-		if node and minetest.get_node_group(node.name,"group:weather_effect") ~= 0 then
+		--minetest.chat_send_all(node.name)
+		if node and minetest.get_node_group(node.name,"weather_effect") ~= 0 then
 			return
 		end
-		--minetest.chat_send_all("trig")
 		local newpos = w.search_up(pos)
 		--minetest.chat_send_all("oldpos"..pos.y)
 		if newpos then
 			--minetest.chat_send_all("newpos".. newpos.y)
-		---[[
 			minetest.env:set_node(newpos, {name="weather:rain"})
 			return
-		--]]
 		else
 			newpos = w.search_down(pos)
 		end
 		if newpos then
 			--minetest.chat_send_all("newpos".. newpos.y)
-		---[[
 			minetest.env:set_node(newpos, {name="weather:rain"})
 			return
-		--]]
 		else
 			minetest.debug("Rain Lost")
 		end
