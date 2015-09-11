@@ -37,7 +37,7 @@ end
 w.search_down = function(pos,search)
 	local nodes = minetest.find_nodes_in_area_under_air(
 		{x=pos.x,y=pos.y-search_height,z=pos.z},
-		{x=pos.x,y=pos.y,z=pos.z},
+		{x=pos.x,y=pos.y-1,z=pos.z},
 		{"group:crumbly",
 		"group:snappy", 
 		"group:cracky",
@@ -214,51 +214,51 @@ minetest.register_node("weather:rain", {
 	},
 	on_blast = function() end,
 	on_rightclick = function(pos,node)
-		local newpos = w.search_up(pos)
+		--local newpos = w.search_up(pos)
 		--minetest.chat_send_all("oldpos"..pos.y)
-		if newpos then
+		--if newpos then
 			--minetest.chat_send_all("newpos".. newpos.y)
-		---[[
-			minetest.env:set_node(newpos, {name="weather:rain"})
+		---[
+			--minetest.env:set_node(newpos, {name="weather:rain"})
 			minetest.remove_node(pos)
-		--]]
-		end
+		--]
+		--end
 	end,
+	--[[
 	on_punch = function(pos,node)
 		local newpos = w.search_down(pos)
 		--minetest.chat_send_all("oldpos"..pos.y)
 		if newpos then
 			--minetest.chat_send_all("newpos".. newpos.y)
-		---[[
+		---[
 			minetest.env:set_node(newpos, {name="weather:rain"})
 			minetest.remove_node(pos)
-		--]]
+		--]
 		end
 	end,
+	--]]
 	after_destruct = function(pos)
 		local node = minetest.get_node_or_nil(pos)
 		if node and minetest.get_node_group(node.name,"group:weather_effect") ~= 0 then
 			return
 		end
-		minetest.debug("1")
-		--minetest.chat_send_all(pos.x..","..pos.y..","..pos.z)
+		--minetest.chat_send_all("trig")
 		local newpos = w.search_up(pos)
 		--minetest.chat_send_all("oldpos"..pos.y)
 		if newpos then
-			minetest.debug("2")
 			--minetest.chat_send_all("newpos".. newpos.y)
 		---[[
 			minetest.env:set_node(newpos, {name="weather:rain"})
+			return
 		--]]
 		else
-			minetest.debug("3")
 			newpos = w.search_down(pos)
 		end
 		if newpos then
-			minetest.debug("4")
 			--minetest.chat_send_all("newpos".. newpos.y)
 		---[[
 			minetest.env:set_node(newpos, {name="weather:rain"})
+			return
 		--]]
 		else
 			minetest.debug("Rain Lost")
@@ -333,15 +333,16 @@ minetest.register_abm({
 		if minetest.env:get_node_light(pos, 0.5) == 15 then
 			return
 		end
-		local newpos = w.search_up(pos)
+		--local newpos = w.search_up(pos)
 		--minetest.chat_send_all("oldpos"..pos.y)
-		if newpos then
+		--if newpos then
 			--minetest.chat_send_all("newpos".. newpos.y)
 		---[[
-			minetest.env:set_node(newpos, {name="weather:rain"})
+			--minetest.env:set_node(newpos, {name="weather:rain"})
+			minetest.chat_send_all("hit")
 			minetest.remove_node(pos)
 		--]]
-		end
+		--end
 	end
 })
 
@@ -350,21 +351,22 @@ minetest.register_abm({
 	interval = 1.0, 
 	chance = 128,
 	action = function (pos, node, active_object_count, active_object_count_wider)
-		local node_got = minetest.get_node_or_nil({x=pos.x,y=pos.y-1,z=pos.z})
-		if node_got and node_got.name == "default:air" then
-			local newpos = w.search_down(pos)
+		local node_got = minetest.get_node({x=pos.x,y=pos.y-1,z=pos.z})
+		if node_got.name == "air" then
+			minetest.chat_send_all("trig")
+			--local newpos = w.search_down(pos)
 			--minetest.chat_send_all("oldpos"..pos.y)
-			if newpos then
+			--if newpos then
 				--minetest.chat_send_all("newpos".. newpos.y)
 			---[[
-				minetest.env:set_node(newpos, {name="weather:rain"})
+				--minetest.env:set_node(newpos, {name="weather:rain"})
 				minetest.remove_node(pos)
 			--]]
-			end
+			--end
 		end
 	end
 })
-
+--]]
 --[[
 minetest.register_abm({
 	nodenames = {"group:rain"},
