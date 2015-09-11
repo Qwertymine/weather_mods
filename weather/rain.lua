@@ -197,7 +197,8 @@ minetest.register_abm({
 	interval = 1.0, 
 	chance = 256,
 	action = function (pos, node, active_object_count, active_object_count_wider)
-		if minetest.env:get_node_light(pos, 0.5) == 15 then
+		minetest.line_of_sight({x=pos.x,y=pos.y+32,z=pos.z},{x=pos.x,y=pos.y-1,z=pos.z},1)
+		if minetest.env:get_node_light(pos, 0.5) ~= 15 then
 			return
 		end
 		--minetest.remove_node(pos)
