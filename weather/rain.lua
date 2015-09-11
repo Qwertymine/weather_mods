@@ -1,5 +1,5 @@
 local search_height = 32
-local square_dist = 3
+--local square_dist = 3
 local search_attempts = 3
 w = {}
 
@@ -65,72 +65,6 @@ w.search_down = function(pos,search)
 	return {x=pos.x,y=ret+1,z=pos.z}
 end
 
--- Rain
---[[
-minetest.register_globalstep(function(dtime)
-	if weather ~= "rain" then return end
-	for _, player in ipairs(minetest.get_connected_players()) do
-		local ppos = player:getpos()
-		ppos.y = ppos.y + 2
-		
-		-- Make sure player is not in a cave/house...
-		if minetest.env:get_node_light(ppos, 0.5) == 15 then 
-			local minp = addvectors(ppos, {x=-9, y=7, z=-9})
-			local maxp = addvectors(ppos, {x= 9, y=7, z= 9})
-
-			local vel = {x=0, y=   -4, z=0}
-			local acc = {x=0, y=-9.81, z=0}
-
-			minetest.add_particlespawner({amount=12, time=0.5,
-				minpos=minp, maxpos=maxp,
-				minvel=vel, maxvel=vel,
-				minacc=acc, maxacc=acc,
-				minexptime=0.8, maxexptime=0.8,
-				minsize=50, maxsize=50,
-				collisiondetection=false, vertical=true, texture="weather_rain.png", player=player:get_player_name()})--]]
-			--[[
-		else
-			local minp = addvectors(ppos, {x=-6, y=-7, z=-6})
-			local maxp = addvectors(ppos, {x= 6, y=7, z= 6})
-			local minpp = addvectors(ppos, {x=-6, y=7, z=-6})
-			local vel = {x=0, y=   -4, z=0}
-			local acc = {x=0, y=-9.81, z=0}
-			local nodes = minetest.find_nodes_in_area_under_air(minp, maxp,{"group:crumbly"})
-			local node = false
-			for i,v in ipairs(nodes) do
-				if minetest.env:get_node_light({x=v.x,y=v.y+1,z=v.z}, 0.5) == 15 then
-					node = true
-					break
-				end
-			end
-			if node then
-				minetest.add_particlespawner({amount=12, time=0.5,
-				minpos=minpp, maxpos=maxp,
-				minvel=vel, maxvel=vel,
-				minacc=acc, maxacc=acc,
-				minexptime=0.8, maxexptime=0.8,
-				minsize=25, maxsize=25,
-				collisiondetection=true, vertical=true, texture="weather_rain.png", player=player:get_player_name()})
-			end
-			for i,v in ipairs(nodes) do
-				if minetest.env:get_node_light({x=v.x,y=v.y+1,z=v.z}, 0.5) == 15 then
-					local p = addvectors(v, {x=0, y=7, z=0})
-					minetest.add_particlespawner({amount=12, time=0.2,
-					minpos=p, maxpos=p,
-					minvel=vel, maxvel=vel,
-					minacc=acc, maxacc=acc,
-					minexptime=0.8, maxexptime=0.8,
-					minsize=25, maxsize=25,
-					collisiondetection=false, vertical=true, texture="weather_rain.png", player=player:get_player_name()})
-				end
-			end
-			--]]--[[
-		end
-
-
-	end
-end)
---]]--]]
 minetest.register_node("weather:rain", {
 	description = "RAIN",
 	drawtype = "nodebox",
@@ -213,30 +147,6 @@ minetest.register_node("weather:rain", {
 		fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5},
 	},
 	on_blast = function() end,
-	on_rightclick = function(pos,node)
-		--local newpos = w.search_up(pos)
-		--minetest.chat_send_all("oldpos"..pos.y)
-		--if newpos then
-			--minetest.chat_send_all("newpos".. newpos.y)
-		---[
-			--minetest.env:set_node(newpos, {name="weather:rain"})
-			minetest.remove_node(pos)
-		--]
-		--end
-	end,
-	--[[
-	on_punch = function(pos,node)
-		local newpos = w.search_down(pos)
-		--minetest.chat_send_all("oldpos"..pos.y)
-		if newpos then
-			--minetest.chat_send_all("newpos".. newpos.y)
-		---[
-			minetest.env:set_node(newpos, {name="weather:rain"})
-			minetest.remove_node(pos)
-		--]
-		end
-	end,
-	--]]
 	after_destruct = function(pos)
 		local node = minetest.get_node_or_nil(pos)
 		if node and minetest.get_node_group(node.name,"group:weather_effect") ~= 0 then
@@ -266,6 +176,21 @@ minetest.register_node("weather:rain", {
 	end,
 })
 
+minetest.register_abm({
+	nodenames = {"weather:rain"},
+	interval = 1.0, 
+	chance = 32,
+	action = function (pos, node, active_object_count, active_object_count_wider)
+		if weather ~= "rain" then
+			if weather == "dry" then
+				minetest.env:set_node(pos, {name="weather:idle_node"})
+			elseif weather == "snow" then
+				minetest.env:set_node(pos, {name="weather:snow"})
+			end
+		end
+	end
+})
+
 --To add weather nodes to old maps
 --[[
 minetest.register_abm({
@@ -286,73 +211,14 @@ minetest.register_abm({
 })
 --]]
 
-minetest.register_abm({
-	nodenames = {"weather:rain"},
-	interval = 1.0, 
-	chance = 256,
-	action = function (pos, node, active_object_count, active_object_count_wider)
-		if weather ~= "rain" then
-			if weather == "dry" then
-				minetest.env:set_node(pos, {name="weather:idle_node"})
-			elseif weather == "snow" then
-				minetest.env:set_node(pos, {name="weather:snow"})
-			end
-		end
-	end
-})
-
+--Remove All weather nodes from a world
 --[[
 minetest.register_abm({
 	nodenames = {"group:weather_effect"},
-	interval = 1.0, 
-	chance = 256,
-	action = function (pos, node, active_object_count, active_object_count_wider)
-		minetest.line_of_sight({x=pos.x,y=pos.y+32,z=pos.z},{x=pos.x,y=pos.y-1,z=pos.z},1)
-		if minetest.env:get_node_light(pos, 0.5) ~= 15 then
-			return
-		end
-		--minetest.remove_node(pos)
-	end
-})
---]]
-
-minetest.register_abm({
-	nodenames = {"group:weather_effect"},
-	interval = 1.0, 
-	chance = 128,
-	action = function (pos, node, active_object_count, active_object_count_wider)
-		if minetest.env:get_node_light(pos, 0.5) == 15 then
-			return
-		end
-		--minetest.chat_send_all("oldpos"..pos.y)
-		--minetest.chat_send_all("hit")
-		minetest.remove_node(pos)
-	end
-})
-
-minetest.register_abm({
-	nodenames = {"group:weather_effect"},
-	interval = 1.0, 
-	chance = 128,
-	action = function (pos, node, active_object_count, active_object_count_wider)
-		local node_got = minetest.get_node({x=pos.x,y=pos.y-1,z=pos.z})
-		if node_got.name == "air" then
-			--minetest.chat_send_all("trig")
-			--minetest.chat_send_all(pos.x..pos.y..pos.z)
-			minetest.remove_node(pos)
-		end
-	end
-})
---]]
---[[
-minetest.register_abm({
-	nodenames = {"group:rain"},
 	interval = 20.0, 
 	chance = 1,
 	action = function (pos, node, active_object_count, active_object_count_wider)
-		if weather ~= "rain" then
-			minetest.remove_node(pos)
-		end
+		minetest.remove_node(pos)
 	end
 })
 --]]

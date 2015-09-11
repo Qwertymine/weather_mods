@@ -23,17 +23,6 @@ minetest.register_node("weather:idle_node", {
 	on_construct = function(pos)
 		minetest.chat_send_all("hi")
 	end,
-	on_rightclick = function(pos,node)
-		--local newpos = w.search_up(pos)
-		--minetest.chat_send_all("oldpos"..pos.y)
-		--if newpos then
-			--minetest.chat_send_all("newpos".. newpos.y)
-		---[
-			--minetest.env:set_node(newpos, {name="weather:rain"})
-			minetest.remove_node(pos)
-		--]
-		--end
-	end,
 	after_destruct = function(pos)
 		local node = minetest.get_node_or_nil(pos)
 		if node and minetest.get_node_group(node.name,"group:weather_effect") ~= 0 then
@@ -109,7 +98,7 @@ dofile(minetest.get_modpath("weather").."/command.lua")
 minetest.register_abm({
 	nodenames = {"weather:idle_node"},
 	interval = 1.0, 
-	chance = 256,
+	chance = 32,
 	action = function (pos, node, active_object_count, active_object_count_wider)
 		if weather ~= "dry" then
 			if weather == "rain" then
@@ -117,6 +106,34 @@ minetest.register_abm({
 			elseif weather == "snow" then
 				minetest.env:set_node(pos, {name="weather:snow"})
 			end
+		end
+	end
+})
+--Occasional Node repositioning
+minetest.register_abm({
+	nodenames = {"group:weather_effect"},
+	interval = 1.0, 
+	chance = 128,
+	action = function (pos, node, active_object_count, active_object_count_wider)
+		if minetest.env:get_node_light(pos, 0.5) == 15 then
+			return
+		end
+		--minetest.chat_send_all("oldpos"..pos.y)
+		--minetest.chat_send_all("hit")
+		minetest.remove_node(pos)
+	end
+})
+
+minetest.register_abm({
+	nodenames = {"group:weather_effect"},
+	interval = 1.0, 
+	chance = 128,
+	action = function (pos, node, active_object_count, active_object_count_wider)
+		local node_got = minetest.get_node({x=pos.x,y=pos.y-1,z=pos.z})
+		if node_got.name == "air" then
+			--minetest.chat_send_all("trig")
+			--minetest.chat_send_all(pos.x..pos.y..pos.z)
+			minetest.remove_node(pos)
 		end
 	end
 })
