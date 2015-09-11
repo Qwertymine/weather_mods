@@ -13,11 +13,15 @@ minetest.register_node("weather:idle_node", {
 	sunlight_propagates = true,
 	walkable = false,
 	buildable_to = true,
+	is_ground_content = false,
 	groups = {weather_effect=1},
 	selection_box = {
 		type = "fixed",
 		fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5},
 	},
+	on_construct = function(pos)
+		minetest.chat_send_all("hi")
+	end,
 })
 
 addvectors = function (v1, v2)
