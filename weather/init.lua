@@ -14,15 +14,11 @@ minetest.register_node("weather:idle_node", {
 	sunlight_propagates = true,
 	walkable = false,
 	buildable_to = true,
-	is_ground_content = false,
 	groups = {weather_effect=1},
 	selection_box = {
 		type = "fixed",
 		fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5},
 	},
-	on_construct = function(pos)
-		minetest.chat_send_all("hi")
-	end,
 	after_destruct = function(pos)
 		local node = minetest.get_node_or_nil(pos)
 		if node and minetest.get_node_group(node.name,"group:weather_effect") ~= 0 then
@@ -145,11 +141,9 @@ local c_weather = minetest.get_content_id("weather:idle_node")
 
 minetest.register_on_generated(function(minp, maxp, seed)
 	local pr = PseudoRandom(seed)
-	--[[
-	if minp.y > (height + depth) or maxp.y < (height - depth) then
+	if minp.y > (400) or maxp.y < (0) then
 		return
 	end
-	--]]
 	-- read chunk data
 	local vm, emin, emax = minetest.get_mapgen_object("voxelmanip")
 	local area = VoxelArea:new{MinEdge=emin, MaxEdge=emax}
@@ -169,6 +163,9 @@ minetest.register_on_generated(function(minp, maxp, seed)
 					local vi
 					local vi_last
 					for y = -maxp.y,-minp.y do
+						if -y < 0 then
+							break
+						end
 						vi_last = vi
 						vi = area:index(x,-y,z)
 						if vi_last then

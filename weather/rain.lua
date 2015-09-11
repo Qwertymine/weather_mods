@@ -136,7 +136,6 @@ minetest.register_node("weather:rain", {
 	--tiles = {"weather_block_rain_lag.png"},
 	inventory_image = "default_junglegrass.png",
 	wield_image = "default_junglegrass.png",
-	is_ground_content = false,
 	paramtype = "light",
 	sunlight_propagates = true,
 	walkable = false,
