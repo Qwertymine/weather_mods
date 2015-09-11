@@ -2,6 +2,7 @@
 -- * rain
 -- * snow
 -- * wind (not implemented)
+w = {}
 
 minetest.register_node("weather:idle_node", {
 	description = "RAIN",
@@ -21,6 +22,44 @@ minetest.register_node("weather:idle_node", {
 	},
 	on_construct = function(pos)
 		minetest.chat_send_all("hi")
+	end,
+	on_rightclick = function(pos,node)
+		--local newpos = w.search_up(pos)
+		--minetest.chat_send_all("oldpos"..pos.y)
+		--if newpos then
+			--minetest.chat_send_all("newpos".. newpos.y)
+		---[
+			--minetest.env:set_node(newpos, {name="weather:rain"})
+			minetest.remove_node(pos)
+		--]
+		--end
+	end,
+	after_destruct = function(pos)
+		local node = minetest.get_node_or_nil(pos)
+		if node and minetest.get_node_group(node.name,"group:weather_effect") ~= 0 then
+			return
+		end
+		--minetest.chat_send_all("trig")
+		local newpos = w.search_up(pos)
+		--minetest.chat_send_all("oldpos"..pos.y)
+		if newpos then
+			--minetest.chat_send_all("newpos".. newpos.y)
+		---[[
+			minetest.env:set_node(newpos, {name="weather:idle_node"})
+			return
+		--]]
+		else
+			newpos = w.search_down(pos)
+		end
+		if newpos then
+			--minetest.chat_send_all("newpos".. newpos.y)
+		---[[
+			minetest.env:set_node(newpos, {name="weather:idle_node"})
+			return
+		--]]
+		else
+			minetest.debug("Rain Lost")
+		end
 	end,
 })
 
@@ -66,6 +105,21 @@ end)
 dofile(minetest.get_modpath("weather").."/rain.lua")
 dofile(minetest.get_modpath("weather").."/snow.lua")
 dofile(minetest.get_modpath("weather").."/command.lua")
+
+minetest.register_abm({
+	nodenames = {"weather:idle_node"},
+	interval = 1.0, 
+	chance = 256,
+	action = function (pos, node, active_object_count, active_object_count_wider)
+		if weather ~= "dry" then
+			if weather == "rain" then
+				minetest.env:set_node(pos, {name="weather:rain"})
+			elseif weather == "snow" then
+				minetest.env:set_node(pos, {name="weather:snow"})
+			end
+		end
+	end
+})
 
 local c_air     = minetest.get_content_id("air")
 local c_stone   = minetest.get_content_id("default:stone")

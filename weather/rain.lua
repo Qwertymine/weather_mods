@@ -1,7 +1,7 @@
 local search_height = 32
 local square_dist = 3
 local search_attempts = 3
-local w = {}
+w = {}
 
 w.search_up = function(pos,search)
 	local nodes = minetest.find_nodes_in_area_under_air(
@@ -266,7 +266,7 @@ minetest.register_node("weather:rain", {
 	end,
 })
 
-
+--To add weather nodes to old maps
 --[[
 minetest.register_abm({
 	nodenames = {"group:crumbly", "group:snappy", "group:cracky", "group:choppy","group:liquid"},
@@ -277,39 +277,30 @@ minetest.register_abm({
 		if pos.x%square_dist ~= 0 or pos.z%square_dist ~= 0 then
 			return
 		end
-		if weather == "rain" then
-		--[
-			if minetest.find_node_near(pos,search_dist,{"group:weather_effect"}) then
-				return
-			end
-			--]
-			local np = addvectors(pos, {x=0, y=1, z=0})
-			if minetest.env:get_node_light(np, 0.5) == 15
-			and minetest.env:get_node(np).name == "air" then
-				if glass_check and #minetest.find_nodes_in_area(pos,{x=pos.x,y=pos.y+search_height,z=pos.z},{"group:cracky"}) ~= 0 then
-					return
-				end
-				minetest.env:add_node(np, {name="weather:rain"})
-			end
+		local np = addvectors(pos, {x=0, y=1, z=0})
+		if minetest.env:get_node_light(np, 0.5) == 15
+		and minetest.env:get_node(np).name == "air" then
+			minetest.env:add_node(np, {name="weather:idle_node"})
 		end
-	--]
 	end
 })
 --]]
---[[
+
 minetest.register_abm({
-	nodenames = {"group:weather_effect"},
+	nodenames = {"weather:rain"},
 	interval = 1.0, 
 	chance = 256,
 	action = function (pos, node, active_object_count, active_object_count_wider)
-		if weather == "rain" then
-			minetest.env:set_node(pos, {name="weather:rain"})
-		elseif weather == "dry" then
-			minetest.env:set_node(pos, {name="weather:idle_node"})
+		if weather ~= "rain" then
+			if weather == "dry" then
+				minetest.env:set_node(pos, {name="weather:idle_node"})
+			elseif weather == "snow" then
+				minetest.env:set_node(pos, {name="weather:snow"})
+			end
 		end
 	end
 })
---]]
+
 --[[
 minetest.register_abm({
 	nodenames = {"group:weather_effect"},
@@ -333,16 +324,9 @@ minetest.register_abm({
 		if minetest.env:get_node_light(pos, 0.5) == 15 then
 			return
 		end
-		--local newpos = w.search_up(pos)
 		--minetest.chat_send_all("oldpos"..pos.y)
-		--if newpos then
-			--minetest.chat_send_all("newpos".. newpos.y)
-		---[[
-			--minetest.env:set_node(newpos, {name="weather:rain"})
-			minetest.chat_send_all("hit")
-			minetest.remove_node(pos)
-		--]]
-		--end
+		--minetest.chat_send_all("hit")
+		minetest.remove_node(pos)
 	end
 })
 
@@ -353,16 +337,9 @@ minetest.register_abm({
 	action = function (pos, node, active_object_count, active_object_count_wider)
 		local node_got = minetest.get_node({x=pos.x,y=pos.y-1,z=pos.z})
 		if node_got.name == "air" then
-			minetest.chat_send_all("trig")
-			--local newpos = w.search_down(pos)
-			--minetest.chat_send_all("oldpos"..pos.y)
-			--if newpos then
-				--minetest.chat_send_all("newpos".. newpos.y)
-			---[[
-				--minetest.env:set_node(newpos, {name="weather:rain"})
-				minetest.remove_node(pos)
-			--]]
-			--end
+			--minetest.chat_send_all("trig")
+			--minetest.chat_send_all(pos.x..pos.y..pos.z)
+			minetest.remove_node(pos)
 		end
 	end
 })
