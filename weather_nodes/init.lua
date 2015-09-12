@@ -1,0 +1,6 @@
+dofile(minetest.get_modpath("weather_nodes").."/abms.lua")
+dofile(minetest.get_modpath("weather_nodes").."/dry.lua")
+dofile(minetest.get_modpath("weather_nodes").."/rain.lua")
+dofile(minetest.get_modpath("weather_nodes").."/snow.lua")
+dofile(minetest.get_modpath("weather_nodes").."/command.lua")
+dofile(minetest.get_modpath("weather_nodes").."/mapgen.lua")
